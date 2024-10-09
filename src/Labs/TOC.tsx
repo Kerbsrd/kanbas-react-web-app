@@ -32,12 +32,12 @@ export default function TOC() {
         </a>
       </li>
       <li className="nav-item">
-        <a id="wd-k" href="https://github.com/jannunzi" className="nav-link">
+        <a id="wd-github-prof" href="https://github.com/jannunzi" className="nav-link">
           Prof GitHub
         </a>
       </li>
       <li className="nav-item">
-        <a id="wd-k" href="https://github.com/kerbsrd" className="nav-link">
+        <a id="wd-github" href="https://github.com/kerbsrd" className="nav-link">
           My GitHub
         </a>
       </li>
