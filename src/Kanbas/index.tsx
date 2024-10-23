@@ -9,7 +9,7 @@ export default function Kanbas() {
   return (
     <div id="wd-kanbas">
             <KanbasNavigation />
-            <div className="wd-main-content-offset p-3 d-flex ">
+            <div className="wd-main-content-offset p-3 flex ">
             <Routes>
               <Route path="/" element={<Navigate to="/Kanbas/Account" />} />
               <Route path="/Account/*" element={<Account />} />
