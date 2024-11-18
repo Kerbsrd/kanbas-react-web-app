@@ -1,3 +1,4 @@
+import FacultyOnly from "../../Account/FacultyOnly";
 import Modules from "../Modules";
 import CourseStatus from "./Status";
 export default function Home() {
@@ -8,7 +9,9 @@ export default function Home() {
           <Modules />
         </td>
         <td valign="top" >
+        <FacultyOnly>
           <CourseStatus />
+          </FacultyOnly>
         </td>
       </tr>
     </table>

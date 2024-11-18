@@ -1,5 +1,32 @@
 [
-    {
+  {
+    "_id": "008",
+    "username": "admin",
+    "password": "pw",
+    "firstName": "deez",
+    "lastName": "nutz",
+    "email": "deez@nutz.com",
+    "dob": "1970-05-29T00:00:00.000Z",
+    "role": "FACULTY",
+    "loginId": "000000008S",
+    "section": "S101",
+    "lastActivity": "2020-10-01",
+    "totalActivity": "10:21:32"
+  },{
+    "_id": "009",
+    "username": "kamala",
+    "password": "pw",
+    "firstName": "kamala",
+    "lastName": "harris",
+    "email": "momala.com",
+    "dob": "1970-05-29T00:00:00.000Z",
+    "role": "STUDENT",
+    "loginId": "000000009S",
+    "section": "S101",
+    "lastActivity": "2020-10-01",
+    "totalActivity": "10:21:32"
+  },
+  {
       "_id": "123",
       "username": "iron_man",
       "password": "stark123",

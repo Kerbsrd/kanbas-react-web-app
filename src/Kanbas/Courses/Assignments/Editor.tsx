@@ -1,23 +1,71 @@
-import { Link, useParams } from "react-router-dom";
-import * as db from "../../Database";
-
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {useEffect, useState} from "react";
+import { addAssignment, updateAssignment } from "./reducer";
 export default function AssignmentEditor() {
-  const assignments = db.assignments;
-  const { aid } = useParams();
-  console.log(aid);
+  const navigate = useNavigate();
+  const { cid, aid } = useParams();
+  const dispatch = useDispatch();
+  console.log(cid, aid);
+  console.log(typeof aid);
+  const editing = aid !== "newassignment";
+
+  //Load assignments, get assignment that was clicked....
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  const currentAssignment = assignments.find((assignment: any) => assignment._id == aid); 
+  console.log(typeof currentAssignment);
+  console.log(currentAssignment);
+
+  //Do not allow students
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const checkRole = () => {
+    if (currentUser.role === "STUDENT") return navigate(`/Kanbas/Courses/${cid}/Assignments`);
+  };
+  useEffect(() => { checkRole(); }, []);
+
+  //For setting values
+  const [_id, setAssignmentID] = useState("");
+  const [title, setAssignmentTitle] = useState("");
+  const [course, setAssignmentCourse] = useState("");
+  const [description, setAssignmentDescription] = useState("");
+  const [points, setAssignmentPoints] = useState(0);
+  const [dueDate, setAssignmentDDate] = useState("");
+  const [availableFrom, setAssignmentADate] = useState("");
+  const [availableUntil, setAssignmentAUDate] = useState("");
+
+  if (currentAssignment && _id === "") {
+    setAssignmentID(currentAssignment._id);
+    setAssignmentTitle(currentAssignment.title);
+    setAssignmentDescription(currentAssignment.description);
+    setAssignmentPoints(currentAssignment.points);
+    setAssignmentDDate(currentAssignment.dueDate);
+    setAssignmentADate(currentAssignment.availableFrom);
+    setAssignmentAUDate(currentAssignment.availableUntil);
+  };
+
+  const save = () =>{
+    const assignment = {_id, title, course, description, points, dueDate, availableFrom, availableUntil};
+    assignment.course = cid!
+    console.log({assignment})
+    if(!editing){
+      dispatch(addAssignment(assignment));
+      console.log("New add")
+    }
+    else{
+      dispatch(updateAssignment(assignment));
+      console.log("updated ")
+    }
+
+  };
   return (
-    <div id="wd-assignments-editor" >
-      {assignments
-        .filter((assignment) => assignment._id === aid)
-        .map((assignment) => (
-          
+    <div id="wd-assignments-editor" > 
           <form className="float-end ">
             <div>
               <label htmlFor="wd-name">Assignment Name</label>
-
-              <input id="wd-name" placeholder="A1 - ENV + HTML" value={assignment.title} className="form-control border-dark mb-4 " />
-              <textarea id="wd-description" className="form-control border-dark" rows={10}>
-                {assignment.description}
+              <input id="wd-name" placeholder="Assignment Name" value={title} className="form-control border-dark mb-4 " 
+              onChange={(e) => setAssignmentTitle(e.target.value)}/>
+              <textarea id="wd-description" className="form-control border-dark" rows={10} onChange={(e) => setAssignmentDescription(e.target.value)}>
+              {description}
               </textarea><br />
             </div>
             <div className="row m-2">
@@ -25,7 +73,8 @@ export default function AssignmentEditor() {
                 <label htmlFor="wd-points" className="float-end">Points</label>
               </div>
               <div className="col">
-                <input id="wd-points" placeholder="100" value={assignment.points} className="form-control mb-2 border-dark" />
+                <input id="wd-points" placeholder="100" value={points} className="form-control mb-2 border-dark" 
+                onChange={(e) => setAssignmentPoints(Number(e.target.value))}/>
               </div>
             </div>
 
@@ -93,16 +142,19 @@ export default function AssignmentEditor() {
                   <p><b>Assign To</b></p>
                   <input id="wd-assign-to" value={"Everyone"} className="form-control mb-2" /><br />
                   <label htmlFor="wd-due-date">Due</label><br />
-                  <input type="date" id="wd-due-date" value={assignment.dueDate} placeholder="2024-05-13" className="form-control mb-2" /><br />
+                  <input type="date" id="wd-due-date" value={dueDate} placeholder="2024-05-13" className="form-control mb-2" 
+                  onChange={(e) => setAssignmentDDate(e.target.value)}/><br />
                   <div>
                     <div className="row">
                       <div className="col col-6">
                         <label htmlFor="wd-available-from">Available from</label>
-                        <input type="date" id="wd-available-from" value={assignment.availableFrom} placeholder="2024-05-06" className="form-control" />
+                        <input type="date" id="wd-available-from" value={availableFrom} placeholder="2024-05-06" className="form-control" 
+                        onChange={(e) => setAssignmentADate(e.target.value)}/>
                       </div>
                       <div className="col col-6">
                         <label htmlFor="wd-available-until">Until</label>
-                        <input type="date" id="wd-available-until" value={assignment.availableUntil} placeholder="2024-05-20" className="form-control" />
+                        <input type="date" id="wd-available-until" value={availableUntil} placeholder="2024-05-20" className="form-control" 
+                        onChange={(e) => setAssignmentAUDate(e.target.value)}/>
                       </div>
                     </div>
                   </div>
@@ -111,15 +163,17 @@ export default function AssignmentEditor() {
             </div>
             <hr />
             <div className="float-end">
-            <Link to={`/Kanbas/Courses/${assignment.course}/Home`}
+            <Link to={`/Kanbas/Courses/${cid}/Assignments`}
                                             className="wd-dashboard-course-link text-decoration-none text-dark" >
               <button className="btn btn-l border-dark">Cancel</button>
-              <button className="btn btn-l btn-danger border-dark m-3">Save</button>
+              <button className="btn btn-l btn-danger border-dark m-3" onClick={save}>Save</button>
               </Link>
+              
             </div>
           </form >
-        ))}
-      </div>
+      
+        </div>
   );
 }
+
 
