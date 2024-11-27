@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
-import * as db from "../Database";
 import { useDispatch, useSelector } from "react-redux";
-import FacultyOnly from "../Account/FacultyOnly";
-import StudentOnly from "../Account/StudentOnly";
-import { addEnrollment, deleteEnrollment } from "./reducer";
+import RoleOnly from "../Account/RoleOnly";
+import { addEnrollment, deleteEnrollment, setEnrollments} from "./reducer";
+//import * as usersClient from "../Account/client";
+import * as enrollmentsClient from "./client"
+
 export default function Dashboard({ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse,
 }: {
   courses: any[];
@@ -19,23 +20,43 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
   const [showAll, toggleShowAll] = useState(true);
   const dispatch = useDispatch();
 
-  function enrolled(courseId: string){
-    return enrollments.some((enrollment: { user: string, course: string }) =>
-        enrollment && enrollment.user === currentUser._id && enrollment.course === courseId);
-  }
-  function enroll(courseId: string){
-    dispatch(addEnrollment({ user: currentUser._id, course: courseId }));
+  const fetchEnrollments = async () => {
+    const enrollments = await enrollmentsClient.fetchAllEnrollmentsForUser(currentUser?._id);
+    dispatch(setEnrollments(enrollments));
+};
+
+useEffect(() => {
+    fetchEnrollments();
+}, []);
+
+   function enrolled(courseId: string){
+     return enrollments.some((enrollment: { user: string, course: string }) =>
+         enrollment && enrollment.user === currentUser._id && enrollment.course === courseId);
+   }
+  const enroll = async (courseId: string) => {
+    console.log(courseId);
+    const enrollment = {
+      user: currentUser?._id,
+      course: courseId
+      };
+    await enrollmentsClient.createEnrollment(enrollment);
+    dispatch(addEnrollment(enrollment));
   }
 
-  function unenroll(courseId: string){
+  const unenroll = async(courseId: string) =>{
+    console.log(courseId);
+    await enrollmentsClient.deleteEnrollment(courseId);
     dispatch(deleteEnrollment(enrollments
         .find((enrollment: { user: string, course: string }) => enrollment && enrollment.user === currentUser._id && enrollment.course === courseId)._id))
     }
 
+  console.log(enrollments);
+    console.log(course);
+    console.log(courses);
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
-      <FacultyOnly>
+      <RoleOnly role="FACULTY">
       <h5>
         New Course
         <input value={course.name} className="form-control mb-2"
@@ -51,12 +72,12 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
           onClick={updateCourse}>Update
         </button>
       </h5>
-      </FacultyOnly>
-      <StudentOnly>
+      </RoleOnly>
+      <RoleOnly role="STUDENT">
       <button className="btn btn-primary float-end" onClick={() => toggleShowAll(!showAll)}>
                             Enrollments
                         </button>
-      </StudentOnly>
+      </RoleOnly>
       <br />
       <hr />
 
@@ -80,7 +101,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
                     <p className="wd-dashboard-course-title card-text overflow-y-hidden" style={{ maxHeight: 100 }}>
                       {course.description} </p>
                     <button className="btn btn-primary"> Go </button>
-                    <StudentOnly>
+                    <RoleOnly role="STUDENT">
                     {enrolled(course._id) ?
 
                     <button className="btn btn-danger mx-2" onClick={(e) => {e.preventDefault();
@@ -91,8 +112,8 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
                         enroll(course._id);}}> Enroll
                     </button>
                       }
-                    </StudentOnly>
-                    <FacultyOnly>
+                    </RoleOnly>
+                    <RoleOnly role="FACULTY">
                     <button
                       onClick={(event) => {
                         event.preventDefault();
@@ -109,7 +130,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
                       className="btn btn-warning me-2 float-end">
                       Edit
                     </button>
-                    </FacultyOnly>
+                    </RoleOnly>
                   </div>
                 </Link>
               </div>

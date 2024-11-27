@@ -2,7 +2,7 @@ import { FaTrash } from "react-icons/fa";
 import { BsPlus } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { FaPencil } from "react-icons/fa6";
-import FacultyOnly from "../../Account/FacultyOnly";
+import RoleOnly from "../../Account/RoleOnly";
 export default function ModuleControlButtons({
   moduleId,
   deleteModule,
@@ -14,7 +14,7 @@ export default function ModuleControlButtons({
 }) {
   return (
     <div className="float-end">
-      <FacultyOnly>
+      <RoleOnly role="FACULTY">
       <FaPencil
         onClick={() => editModule(moduleId)}
         className="text-primary me-3"
@@ -24,7 +24,7 @@ export default function ModuleControlButtons({
         onClick={() => deleteModule(moduleId)}
       />
       <BsPlus className="fs-1" />
-      </FacultyOnly>
+      </RoleOnly>
       <IoEllipsisVertical className="fs-4" />
     </div>
   );

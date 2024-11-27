@@ -1,14 +1,13 @@
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "./GreenCheckmark";
-import FacultyOnly from "../../Account/FacultyOnly";
-import { deleteAssignment } from "../Assignments/reducer";
+import RoleOnly from "../../Account/RoleOnly";
 import { FaTrash } from "react-icons/fa";
 export default function LessonControlButtons() {
   return (
     <div className="float-end">
-      <FacultyOnly>
+      <RoleOnly role="FACULTY">
       <FaTrash className="text-danger me-2 mb-1" />
-        </FacultyOnly>
+        </RoleOnly>
       <GreenCheckmark />
       <IoEllipsisVertical className="fs-4" />
     </div>

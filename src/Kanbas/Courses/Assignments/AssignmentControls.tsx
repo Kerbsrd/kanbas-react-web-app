@@ -1,6 +1,6 @@
 import { FaPlus } from "react-icons/fa6";
 import { HiMagnifyingGlass } from "react-icons/hi2";
-import FacultyOnly from "../../Account/FacultyOnly";
+import RoleOnly from "../../Account/RoleOnly";
 import { Link, useParams } from "react-router-dom";
 
 export default function AssignmentControls() {
@@ -16,11 +16,11 @@ export default function AssignmentControls() {
                 </div>
                 <button className="btn btn-m btn-secondary w-50 mt-1 text-start ">
                     <FaPlus className="me-2 fs-5" /> Group </button>
-                    <FacultyOnly>
+                    <RoleOnly role="FACULTY">
                     <Link to={`/Kanbas/Courses/${cid}/Assignments/newassignment`} className="text-dark text-decoration-none"><button className="btn btn-m btn-danger w-50 mt-1 text-start">
                     <FaPlus className="me-2 fs-5" /> Assignment </button>
                     </Link>
-                    </FacultyOnly>
+                    </RoleOnly>
             </div>
         </div>
     );

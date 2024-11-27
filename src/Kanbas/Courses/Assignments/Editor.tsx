@@ -1,6 +1,8 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {useEffect, useState} from "react";
+import * as coursesClient from '../client';
+import * as assignmentsClient from './client';
 import { addAssignment, updateAssignment } from "./reducer";
 export default function AssignmentEditor() {
   const navigate = useNavigate();
@@ -43,15 +45,18 @@ export default function AssignmentEditor() {
     setAssignmentAUDate(currentAssignment.availableUntil);
   };
 
-  const save = () =>{
+  const save = async () =>{
     const assignment = {_id, title, course, description, points, dueDate, availableFrom, availableUntil};
-    assignment.course = cid!
+    
     console.log({assignment})
     if(!editing){
-      dispatch(addAssignment(assignment));
+      assignment.course = cid!
+      const newAssignment = await coursesClient.createAssignmentForCourse(cid!, assignment);
+      dispatch(addAssignment(newAssignment));
       console.log("New add")
     }
     else{
+      await assignmentsClient.updateAssignment(assignment)
       dispatch(updateAssignment(assignment));
       console.log("updated ")
     }
