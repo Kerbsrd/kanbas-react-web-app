@@ -6,7 +6,10 @@ import AssignmentEditor from "./Assignments/Editor";
 import { Navigate, Route, Routes, useParams, useLocation } from "react-router";
 import PeopleTable from "./People/Table";
 import { FaAlignJustify } from "react-icons/fa";
-
+import Quizzes from "./Quizzes";
+import QuizEditor from "./Quizzes/QuEditor";
+import QuestionEditor from "./Quizzes/Questions/QuestEditor";
+import QuizEditorFull from "./Quizzes/QuizEditorNav";
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const { pathname } = useLocation();
@@ -18,7 +21,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
         {course && course.name} &gt; {pathname.split("/")[4]}
       </h2>
       <hr />
-      <table>
+      <table className="w-75 float-start">
         <tr>
           <td valign="top">
             <CoursesNavigation />
@@ -31,6 +34,8 @@ export default function Courses({ courses }: { courses: any[]; }) {
               <Route path="Assignments" element={<Assignments />} />
               <Route path="Assignments/:aid" element={<AssignmentEditor />} />
               <Route path="People" element={<PeopleTable />} />
+              <Route path="Quizzes" element={<Quizzes />} />
+              <Route path="Quizzes/:qid" element={<QuizEditorFull/>} /> 
             </Routes>
           </td>
         </tr>
